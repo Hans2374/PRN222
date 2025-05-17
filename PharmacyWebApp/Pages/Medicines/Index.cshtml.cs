@@ -4,7 +4,6 @@ using PharmacyWebApp.Data.Models;
 using PharmacyWebApp.Services.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using X.PagedList;
 
 namespace PharmacyWebApp.Pages.Medicines
 {
@@ -17,29 +16,28 @@ namespace PharmacyWebApp.Pages.Medicines
             _medicineService = medicineService;
         }
 
-        public IPagedList<MedicineInformation> MedicinesPaged { get; set; }
-        public List<MedicineInformation> Medicines { get; set; }
+        public List<MedicineInformation> Medicines { get; set; } = new List<MedicineInformation>();
 
-        public async Task<IActionResult> OnGetAsync(int? page)
+        public int CurrentPage { get; set; }
+        public int TotalPages { get; set; }
+        public int PageSize { get; set; } = 3; // Display 3 medicines per page
+
+        public async Task<IActionResult> OnGetAsync(int pageNumber = 1)
         {
-            int pageNumber = page ?? 1;
-            int pageSize = 3;
-
-            // Đảm bảo rằng pageNumber luôn hợp lệ
+            // Ensure page number is at least 1
             if (pageNumber < 1)
             {
                 pageNumber = 1;
             }
 
-            int totalCount = await _medicineService.GetTotalMedicineCountAsync();
-            Medicines = await _medicineService.GetMedicinesAsync(pageNumber, pageSize);
+            CurrentPage = pageNumber;
 
-            MedicinesPaged = new StaticPagedList<MedicineInformation>(
-                Medicines,
-                pageNumber,
-                pageSize,
-                totalCount
-            );
+            // Get total count to calculate total pages
+            int totalCount = await _medicineService.GetTotalMedicineCountAsync();
+            TotalPages = (int)Math.Ceiling(totalCount / (double)PageSize);
+
+            // Get paginated medicines
+            Medicines = await _medicineService.GetMedicinesAsync(CurrentPage, PageSize);
 
             return Page();
         }
