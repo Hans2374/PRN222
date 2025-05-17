@@ -35,3 +35,19 @@
 <div>
     @Html.PagedListPager(Model.MedicinesPaged, page => Url.Page("/Medicines/Index", new { page }))
 </div>
+
+@section Scripts {
+    <script>
+        // Thêm class Bootstrap cho các phần tử phân trang
+        $(document).ready(function() {
+            // Thêm class cho ul
+            $("ul.pagination").addClass("pagination");
+
+            // Thêm class cho li
+            $("ul.pagination li").addClass("page-item");
+
+            // Thêm class cho a
+            $("ul.pagination li a").addClass("page-link");
+        });
+    </script>
+}

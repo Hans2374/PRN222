@@ -43,7 +43,7 @@ namespace PharmacyWebApp.Pages
             HttpContext.Session.SetString("Role", account.Role.ToString());
             HttpContext.Session.SetString("Email", account.EmailAddress ?? string.Empty);
 
-            return RedirectToPage("/Medicines/Index");
+            return RedirectToPage("Medicines/Index");
         }
 
     }
