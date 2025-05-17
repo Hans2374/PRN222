@@ -1,0 +1,37 @@
+﻿@page
+@using X.PagedList.Mvc.Core
+@model PharmacyWebApp.Pages.Medicines.IndexModel
+@{
+    ViewData["Title"] = "Medicines";
+}
+<h2>Medicine List</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Medicine ID</th>
+            <th>Name</th>
+            <th>Active Ingredients</th>
+            <th>Expiration Date</th>
+            <th>Dosage Form</th>
+            <th>Warnings</th>
+            <th>Manufacturer</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var medicine in Model.Medicines)
+        {
+            <tr>
+                <td>@medicine.MedicineId</td>
+                <td>@medicine.MedicineName</td>
+                <td>@medicine.ActiveIngredients</td>
+                <td>@medicine.ExpirationDate</td>
+                <td>@medicine.DosageForm</td>
+                <td>@medicine.WarningsAndPrecautions</td>
+                <td>@medicine.Manufacturer?.ManufacturerName</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div>
+    @Html.PagedListPager(Model.MedicinesPaged, page => Url.Page("/Medicines/Index", new { page }))
+</div>
