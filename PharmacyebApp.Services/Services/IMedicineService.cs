@@ -8,5 +8,10 @@ namespace PharmacyWebApp.Services.Services
     {
         Task<List<MedicineInformation>> GetMedicinesAsync(int pageNumber, int pageSize);
         Task<int> GetTotalMedicineCountAsync();
+        Task<MedicineInformation> GetMedicineByIdAsync(string id);
+        Task<List<Manufacturer>> GetAllManufacturersAsync();
+        Task CreateMedicineAsync(MedicineInformation medicine);
+        Task UpdateMedicineAsync(MedicineInformation medicine);
+        Task DeleteMedicineAsync(string id);
     }
 }

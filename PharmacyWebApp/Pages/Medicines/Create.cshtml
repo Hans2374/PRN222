@@ -1,0 +1,61 @@
+﻿@page
+@model PharmacyWebApp.Pages.Medicines.CreateModel
+@{
+    ViewData["Title"] = "Create Medicine";
+}
+
+<h2>Create New Medicine</h2>
+
+<form method="post">
+    <div class="form-group">
+        <label asp-for="Medicine.MedicineId"></label>
+        <input asp-for="Medicine.MedicineId" class="form-control" />
+        <span asp-validation-for="Medicine.MedicineId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Medicine.MedicineName"></label>
+        <input asp-for="Medicine.MedicineName" class="form-control" />
+        <span asp-validation-for="Medicine.MedicineName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Medicine.ActiveIngredients"></label>
+        <input asp-for="Medicine.ActiveIngredients" class="form-control" />
+        <span asp-validation-for="Medicine.ActiveIngredients" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Medicine.ExpirationDate"></label>
+        <input asp-for="Medicine.ExpirationDate" class="form-control" />
+        <span asp-validation-for="Medicine.ExpirationDate" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Medicine.DosageForm"></label>
+        <input asp-for="Medicine.DosageForm" class="form-control" />
+        <span asp-validation-for="Medicine.DosageForm" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Medicine.WarningsAndPrecautions"></label>
+        <textarea asp-for="Medicine.WarningsAndPrecautions" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Medicine.WarningsAndPrecautions" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Medicine.ManufacturerId">Manufacturer</label>
+        <select asp-for="Medicine.ManufacturerId" class="form-control">
+            <option value="">-- Select Manufacturer --</option>
+            @foreach (var manufacturer in Model.Manufacturers)
+            {
+                <option value="@manufacturer.ManufacturerId">@manufacturer.ManufacturerName</option>
+            }
+        </select>
+        <span asp-validation-for="Medicine.ManufacturerId" class="text-danger"></span>
+    </div>
+    <div class="form-group mt-3">
+        <button type="submit" class="btn btn-primary">Create</button>
+        <a asp-page="./Index" class="btn btn-secondary">Back to List</a>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

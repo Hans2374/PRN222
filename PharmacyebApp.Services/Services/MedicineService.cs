@@ -23,5 +23,30 @@ namespace PharmacyWebApp.Services.Services
         {
             return await _repository.GetTotalCountAsync();
         }
+
+        public async Task<MedicineInformation> GetMedicineByIdAsync(string id)
+        {
+            return await _repository.GetByIdAsync(id);
+        }
+
+        public async Task<List<Manufacturer>> GetAllManufacturersAsync()
+        {
+            return await _repository.GetAllManufacturersAsync();
+        }
+
+        public async Task CreateMedicineAsync(MedicineInformation medicine)
+        {
+            await _repository.CreateAsync(medicine);
+        }
+
+        public async Task UpdateMedicineAsync(MedicineInformation medicine)
+        {
+            await _repository.UpdateAsync(medicine);
+        }
+
+        public async Task DeleteMedicineAsync(string id)
+        {
+            await _repository.DeleteAsync(id);
+        }
     }
 }

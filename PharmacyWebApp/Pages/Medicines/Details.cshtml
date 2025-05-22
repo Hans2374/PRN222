@@ -1,0 +1,37 @@
+﻿@page "{id}"
+@model PharmacyWebApp.Pages.Medicines.DetailsModel
+@{
+    ViewData["Title"] = "Medicine Details";
+}
+
+<h2>Medicine Details</h2>
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-3">Medicine ID</dt>
+        <dd class="col-sm-9">@Model.Medicine.MedicineId</dd>
+
+        <dt class="col-sm-3">Name</dt>
+        <dd class="col-sm-9">@Model.Medicine.MedicineName</dd>
+
+        <dt class="col-sm-3">Active Ingredients</dt>
+        <dd class="col-sm-9">@Model.Medicine.ActiveIngredients</dd>
+
+        <dt class="col-sm-3">Expiration Date</dt>
+        <dd class="col-sm-9">@Model.Medicine.ExpirationDate</dd>
+
+        <dt class="col-sm-3">Dosage Form</dt>
+        <dd class="col-sm-9">@Model.Medicine.DosageForm</dd>
+
+        <dt class="col-sm-3">Warnings and Precautions</dt>
+        <dd class="col-sm-9">@Model.Medicine.WarningsAndPrecautions</dd>
+
+        <dt class="col-sm-3">Manufacturer</dt>
+        <dd class="col-sm-9">@Model.Medicine.Manufacturer?.ManufacturerName</dd>
+    </dl>
+</div>
+
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.Medicine.MedicineId" class="btn btn-primary">Edit</a>
+    <a asp-page="./Index" class="btn btn-secondary">Back to List</a>
+</div>
