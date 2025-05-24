@@ -32,6 +32,6 @@
 </div>
 
 <div>
-    <a asp-page="./Edit" asp-route-id="@Model.Medicine.MedicineId" class="btn btn-primary">Edit</a>
+    <a asp-page="./Edit" asp-route-id="@Model.Medicine.MedicineId" class="btn btn-primary btn-sm @(Model.UserRole == 3 ? "disabled" : "")" tabindex="@(Model.UserRole == 3 ? "-1" : "0")" aria-disabled="@(Model.UserRole == 3 ? "true" : "false")">Edit</a>
     <a asp-page="./Index" class="btn btn-secondary">Back to List</a>
 </div>

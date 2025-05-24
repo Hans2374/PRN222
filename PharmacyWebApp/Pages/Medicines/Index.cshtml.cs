@@ -17,6 +17,7 @@ namespace PharmacyWebApp.Pages.Medicines
         }
 
         public List<MedicineInformation> Medicines { get; set; } = new List<MedicineInformation>();
+        public int UserRole { get; set; }
 
         public int CurrentPage { get; set; }
         public int TotalPages { get; set; }
@@ -38,6 +39,10 @@ namespace PharmacyWebApp.Pages.Medicines
 
             // Get paginated medicines
             Medicines = await _medicineService.GetMedicinesAsync(CurrentPage, PageSize);
+
+            // Read role from session
+            var roleString = HttpContext.Session.GetString("Role");
+            UserRole = int.TryParse(roleString, out var role) ? role : 0;
 
             return Page();
         }

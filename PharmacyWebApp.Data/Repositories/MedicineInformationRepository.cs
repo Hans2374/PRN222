@@ -22,7 +22,7 @@ namespace PharmacyWebApp.Data.Repositories
 
             return await _context.MedicineInformations
                 .Include(m => m.Manufacturer)
-                .OrderBy(m => m.MedicineId)
+                .OrderByDescending(m => m.MedicineId) // Changed to OrderByDescending to show newest first
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
