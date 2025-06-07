@@ -1,8 +1,8 @@
+using GameStore.Business.Interfaces;
 using GameStore.Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,11 +13,11 @@ namespace GameStore.Web.Pages_Games
     [Authorize(Roles = "Admin,Manager")]
     public class DeleteModel : PageModel
     {
-        private readonly GameStore.Data.Models.GameStoreDbContext _context;
+        private readonly IGameService _gameService;
 
-        public DeleteModel(GameStore.Data.Models.GameStoreDbContext context)
+        public DeleteModel(IGameService gameService)
         {
-            _context = context;
+            _gameService = gameService;
         }
 
         [BindProperty]
@@ -30,7 +30,7 @@ namespace GameStore.Web.Pages_Games
                 return NotFound();
             }
 
-            var game = await _context.Games.FirstOrDefaultAsync(m => m.Id == id);
+            var game = await _gameService.GetGameByIdAsync(id.Value);
 
             if (game == null)
             {
@@ -50,13 +50,7 @@ namespace GameStore.Web.Pages_Games
                 return NotFound();
             }
 
-            var game = await _context.Games.FindAsync(id);
-            if (game != null)
-            {
-                Game = game;
-                _context.Games.Remove(Game);
-                await _context.SaveChangesAsync();
-            }
+            await _gameService.DeleteGameAsync(id.Value);
 
             return RedirectToPage("./Index");
         }

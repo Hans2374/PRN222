@@ -1,8 +1,8 @@
+using GameStore.Business.Interfaces;
 using GameStore.Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,11 +13,11 @@ namespace GameStore.Web.Pages_Games
     [Authorize]
     public class DetailsModel : PageModel
     {
-        private readonly GameStore.Data.Models.GameStoreDbContext _context;
+        private readonly IGameService _gameService;
 
-        public DetailsModel(GameStore.Data.Models.GameStoreDbContext context)
+        public DetailsModel(IGameService gameService)
         {
-            _context = context;
+            _gameService = gameService;
         }
 
         public Game Game { get; set; } = default!;
@@ -29,7 +29,7 @@ namespace GameStore.Web.Pages_Games
                 return NotFound();
             }
 
-            var game = await _context.Games.FirstOrDefaultAsync(m => m.Id == id);
+            var game = await _gameService.GetGameByIdAsync(id.Value);
             if (game == null)
             {
                 return NotFound();

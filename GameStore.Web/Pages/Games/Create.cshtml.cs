@@ -1,3 +1,4 @@
+using GameStore.Business.Interfaces;
 using GameStore.Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,16 +14,19 @@ namespace GameStore.Web.Pages_Games
     [Authorize(Roles = "Admin,Manager")]
     public class CreateModel : PageModel
     {
-        private readonly GameStore.Data.Models.GameStoreDbContext _context;
+        private readonly IGameService _gameService;
+        private readonly ICategoryService _categoryService;
 
-        public CreateModel(GameStore.Data.Models.GameStoreDbContext context)
+        public CreateModel(IGameService gameService, ICategoryService categoryService)
         {
-            _context = context;
+            _gameService = gameService;
+            _categoryService = categoryService;
         }
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
-        ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
+            var categories = await _categoryService.GetCategoriesAsync();
+            ViewData["CategoryId"] = new SelectList(categories, "Id", "Name");
             return Page();
         }
 
@@ -34,11 +38,12 @@ namespace GameStore.Web.Pages_Games
         {
             if (!ModelState.IsValid)
             {
+                var categories = await _categoryService.GetCategoriesAsync();
+                ViewData["CategoryId"] = new SelectList(categories, "Id", "Name");
                 return Page();
             }
 
-            _context.Games.Add(Game);
-            await _context.SaveChangesAsync();
+            await _gameService.AddGameAsync(Game);
 
             return RedirectToPage("./Index");
         }

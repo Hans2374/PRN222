@@ -1,3 +1,4 @@
+using GameStore.Business.Interfaces;
 using GameStore.Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,11 +15,13 @@ namespace GameStore.Web.Pages_Games
     [Authorize(Roles = "Admin,Manager")]
     public class EditModel : PageModel
     {
-        private readonly GameStore.Data.Models.GameStoreDbContext _context;
+        private readonly IGameService _gameService;
+        private readonly ICategoryService _categoryService;
 
-        public EditModel(GameStore.Data.Models.GameStoreDbContext context)
+        public EditModel(IGameService gameService, ICategoryService categoryService)
         {
-            _context = context;
+            _gameService = gameService;
+            _categoryService = categoryService;
         }
 
         [BindProperty]
@@ -31,13 +34,15 @@ namespace GameStore.Web.Pages_Games
                 return NotFound();
             }
 
-            var game =  await _context.Games.FirstOrDefaultAsync(m => m.Id == id);
+            var game = await _gameService.GetGameByIdAsync(id.Value);
             if (game == null)
             {
                 return NotFound();
             }
             Game = game;
-           ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
+
+            var categories = await _categoryService.GetCategoriesAsync();
+            ViewData["CategoryId"] = new SelectList(categories, "Id", "Name");
             return Page();
         }
 
@@ -47,18 +52,19 @@ namespace GameStore.Web.Pages_Games
         {
             if (!ModelState.IsValid)
             {
+                var categories = await _categoryService.GetCategoriesAsync();
+                ViewData["CategoryId"] = new SelectList(categories, "Id", "Name");
                 return Page();
             }
 
-            _context.Attach(Game).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                await _gameService.UpdateGameAsync(Game);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!GameExists(Game.Id))
+                var exists = await GameExists(Game.Id);
+                if (!exists)
                 {
                     return NotFound();
                 }
@@ -71,9 +77,10 @@ namespace GameStore.Web.Pages_Games
             return RedirectToPage("./Index");
         }
 
-        private bool GameExists(int id)
+        private async Task<bool> GameExists(int id)
         {
-            return _context.Games.Any(e => e.Id == id);
+            var game = await _gameService.GetGameByIdAsync(id);
+            return game != null;
         }
     }
 }

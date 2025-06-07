@@ -1,3 +1,4 @@
+using GameStore.Business.Interfaces;
 using GameStore.Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,11 +14,11 @@ namespace GameStore.Web.Pages_Categories
     [Authorize(Roles = "Admin,Manager")]
     public class CreateModel : PageModel
     {
-        private readonly GameStore.Data.Models.GameStoreDbContext _context;
+        private readonly ICategoryService _categoryService;
 
-        public CreateModel(GameStore.Data.Models.GameStoreDbContext context)
+        public CreateModel(ICategoryService categoryService)
         {
-            _context = context;
+            _categoryService = categoryService;
         }
 
         public IActionResult OnGet()
@@ -36,8 +37,7 @@ namespace GameStore.Web.Pages_Categories
                 return Page();
             }
 
-            _context.Categories.Add(Category);
-            await _context.SaveChangesAsync();
+            await _categoryService.AddCategoryAsync(Category);
 
             return RedirectToPage("./Index");
         }

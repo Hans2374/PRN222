@@ -1,3 +1,4 @@
+using GameStore.Business.Interfaces;
 using GameStore.Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,11 +15,11 @@ namespace GameStore.Web.Pages_Categories
     [Authorize(Roles = "Admin,Manager")]
     public class EditModel : PageModel
     {
-        private readonly GameStore.Data.Models.GameStoreDbContext _context;
+        private readonly ICategoryService _categoryService;
 
-        public EditModel(GameStore.Data.Models.GameStoreDbContext context)
+        public EditModel(ICategoryService categoryService)
         {
-            _context = context;
+            _categoryService = categoryService;
         }
 
         [BindProperty]
@@ -31,7 +32,7 @@ namespace GameStore.Web.Pages_Categories
                 return NotFound();
             }
 
-            var category =  await _context.Categories.FirstOrDefaultAsync(m => m.Id == id);
+            var category = await _categoryService.GetCategoryByIdAsync(id.Value);
             if (category == null)
             {
                 return NotFound();
@@ -49,15 +50,14 @@ namespace GameStore.Web.Pages_Categories
                 return Page();
             }
 
-            _context.Attach(Category).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                await _categoryService.UpdateCategoryAsync(Category);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CategoryExists(Category.Id))
+                var exists = await CategoryExists(Category.Id);
+                if (!exists)
                 {
                     return NotFound();
                 }
@@ -70,9 +70,10 @@ namespace GameStore.Web.Pages_Categories
             return RedirectToPage("./Index");
         }
 
-        private bool CategoryExists(int id)
+        private async Task<bool> CategoryExists(int id)
         {
-            return _context.Categories.Any(e => e.Id == id);
+            var category = await _categoryService.GetCategoryByIdAsync(id);
+            return category != null;
         }
     }
 }
