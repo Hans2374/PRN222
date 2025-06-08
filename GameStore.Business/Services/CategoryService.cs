@@ -28,6 +28,11 @@ namespace GameStore.Business.Services
             return await _repository.GetTotalCategoriesCountAsync();
         }
 
+        public async Task<Category?> GetCategoryByIdAsync(int id)
+        {
+            return await _repository.GetCategoryByIdAsync(id);
+        }
+
         public async Task AddCategoryAsync(Category category)
         {
             // Add business logic validation if needed
@@ -52,13 +57,14 @@ namespace GameStore.Business.Services
 
         public async Task DeleteCategoryAsync(int id)
         {
-            // Could add business logic to check if category has games before deleting
-            await _repository.DeleteCategoryAsync(id);
-        }
+            // Business logic: Check if category has games before deleting
+            var hasGames = await _repository.CategoryHasGamesAsync(id);
+            if (hasGames)
+            {
+                throw new InvalidOperationException("Cannot delete category because it contains games. Please remove or reassign all games from this category before deleting.");
+            }
 
-        public Task<Category> GetCategoryByIdAsync(int id)
-        {
-            throw new NotImplementedException();
+            await _repository.DeleteCategoryAsync(id);
         }
     }
 }

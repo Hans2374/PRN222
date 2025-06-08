@@ -23,6 +23,9 @@ namespace GameStore.Web.Pages_Categories
         [BindProperty]
         public Category Category { get; set; } = default!;
 
+        [TempData]
+        public string ErrorMessage { get; set; } = string.Empty;
+
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null)
@@ -50,9 +53,26 @@ namespace GameStore.Web.Pages_Categories
                 return NotFound();
             }
 
-            await _categoryService.DeleteCategoryAsync(id.Value);
+            try
+            {
+                await _categoryService.DeleteCategoryAsync(id.Value);
+                return RedirectToPage("./Index");
+            }
+            catch (InvalidOperationException ex)
+            {
+                // Handle the business logic exception
+                ErrorMessage = ex.Message;
 
-            return RedirectToPage("./Index");
+                // Reload the category data for the page
+                var category = await _categoryService.GetCategoryByIdAsync(id.Value);
+                if (category == null)
+                {
+                    return NotFound();
+                }
+                Category = category;
+
+                return Page();
+            }
         }
     }
 }

@@ -30,6 +30,16 @@ namespace GameStore.Data.Repositories
             return await _context.Categories.CountAsync();
         }
 
+        public async Task<Category?> GetCategoryByIdAsync(int id)
+        {
+            return await _context.Categories.FindAsync(id);
+        }
+
+        public async Task<bool> CategoryHasGamesAsync(int categoryId)
+        {
+            return await _context.Games.AnyAsync(g => g.CategoryId == categoryId);
+        }
+
         public async Task AddCategoryAsync(Category category)
         {
             _context.Categories.Add(category);
@@ -50,11 +60,6 @@ namespace GameStore.Data.Repositories
                 _context.Categories.Remove(category);
                 await _context.SaveChangesAsync();
             }
-        }
-
-        public Task<Category> GetCategoryByIdAsync(int id)
-        {
-            throw new NotImplementedException();
         }
     }
 }
