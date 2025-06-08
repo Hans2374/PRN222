@@ -2,7 +2,7 @@
 @model GameStore.Web.Pages_Games.IndexModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Games";
 }
 
 <h1>Games Table Display</h1>
@@ -17,16 +17,72 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Game[0].Title)
+                <a asp-page="./Index" asp-route-sortOrder="@Model.TitleSortOrder" asp-route-currentPage="@Model.CurrentPage" class="text-dark text-decoration-none">
+                    @Html.DisplayNameFor(model => model.Game[0].Title)
+                    @if (Model.SortOrder == "title")
+                    {
+                        <i class="fas fa-sort-up"></i>
+                    }
+                    else if (Model.SortOrder == "title_desc")
+                    {
+                        <i class="fas fa-sort-down"></i>
+                    }
+                    else
+                    {
+                        <i class="fas fa-sort"></i>
+                    }
+                </a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Game[0].Price)
+                <a asp-page="./Index" asp-route-sortOrder="@Model.PriceSortOrder" asp-route-currentPage="@Model.CurrentPage" class="text-dark text-decoration-none">
+                    @Html.DisplayNameFor(model => model.Game[0].Price)
+                    @if (Model.SortOrder == "price")
+                    {
+                        <i class="fas fa-sort-up"></i>
+                    }
+                    else if (Model.SortOrder == "price_desc")
+                    {
+                        <i class="fas fa-sort-down"></i>
+                    }
+                    else
+                    {
+                        <i class="fas fa-sort"></i>
+                    }
+                </a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Game[0].ReleaseDate)
+                <a asp-page="./Index" asp-route-sortOrder="@Model.DateSortOrder" asp-route-currentPage="@Model.CurrentPage" class="text-dark text-decoration-none">
+                    @Html.DisplayNameFor(model => model.Game[0].ReleaseDate)
+                    @if (Model.SortOrder == "date")
+                    {
+                        <i class="fas fa-sort-up"></i>
+                    }
+                    else if (Model.SortOrder == "date_desc")
+                    {
+                        <i class="fas fa-sort-down"></i>
+                    }
+                    else
+                    {
+                        <i class="fas fa-sort"></i>
+                    }
+                </a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Game[0].Category)
+                <a asp-page="./Index" asp-route-sortOrder="@Model.CategorySortOrder" asp-route-currentPage="@Model.CurrentPage" class="text-dark text-decoration-none">
+                    @Html.DisplayNameFor(model => model.Game[0].Category)
+                    @if (Model.SortOrder == "category")
+                    {
+                        <i class="fas fa-sort-up"></i>
+                    }
+                    else if (Model.SortOrder == "category_desc")
+                    {
+                        <i class="fas fa-sort-down"></i>
+                    }
+                    else
+                    {
+                        <i class="fas fa-sort"></i>
+                    }
+                </a>
             </th>
             <th></th>
         </tr>
@@ -47,9 +103,15 @@
                 @Html.DisplayFor(modelItem => item.Category.Name)
             </td>
             <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                {
+                    <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> <span>|</span>
+                }
+                <a asp-page="./Details" asp-route-id="@item.Id">Details</a>
+                @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                {
+                    <span>|</span> <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                }
             </td>
         </tr>
 }
@@ -63,7 +125,7 @@
                 @if (Model.HasPreviousPage)
                 {
                     <li class="page-item">
-                        <a class="page-link" asp-page="./Index" asp-route-currentPage="@(Model.CurrentPage - 1)">Previous</a>
+                        <a class="page-link" asp-page="./Index" asp-route-currentPage="@(Model.CurrentPage - 1)" asp-route-sortOrder="@Model.SortOrder">Previous</a>
                     </li>
                 }
                 else
@@ -76,14 +138,14 @@
                 @for (var i = 1; i <= Model.TotalPages; i++)
                 {
                     <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
-                        <a class="page-link" asp-page="./Index" asp-route-currentPage="@i">@i</a>
+                        <a class="page-link" asp-page="./Index" asp-route-currentPage="@i" asp-route-sortOrder="@Model.SortOrder">@i</a>
                     </li>
                 }
 
                 @if (Model.HasNextPage)
                 {
                     <li class="page-item">
-                        <a class="page-link" asp-page="./Index" asp-route-currentPage="@(Model.CurrentPage + 1)">Next</a>
+                        <a class="page-link" asp-page="./Index" asp-route-currentPage="@(Model.CurrentPage + 1)" asp-route-sortOrder="@Model.SortOrder">Next</a>
                     </li>
                 }
                 else

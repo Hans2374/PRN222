@@ -27,9 +27,18 @@ namespace GameStore.Web.Pages_Games
         [BindProperty(SupportsGet = true)]
         public int CurrentPage { get; set; } = 1;
 
+        [BindProperty(SupportsGet = true)]
+        public string SortOrder { get; set; }
+
         public int TotalPages { get; set; }
         public bool HasPreviousPage => CurrentPage > 1;
         public bool HasNextPage => CurrentPage < TotalPages;
+
+        // Sort order properties for view
+        public string TitleSortOrder => SortOrder == "title" ? "title_desc" : "title";
+        public string PriceSortOrder => SortOrder == "price" ? "price_desc" : "price";
+        public string DateSortOrder => SortOrder == "date" ? "date_desc" : "date";
+        public string CategorySortOrder => SortOrder == "category" ? "category_desc" : "category";
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -44,7 +53,22 @@ namespace GameStore.Web.Pages_Games
             if (CurrentPage < 1) CurrentPage = 1;
             if (CurrentPage > TotalPages && TotalPages > 0) CurrentPage = TotalPages;
 
-            Game = await _gameService.GetGamesAsync(CurrentPage, PageSize);
+            var games = await _gameService.GetGamesAsync(CurrentPage, PageSize);
+
+            // Apply sorting
+            Game = SortOrder switch
+            {
+                "title" => games.OrderBy(g => g.Title).ToList(),
+                "title_desc" => games.OrderByDescending(g => g.Title).ToList(),
+                "price" => games.OrderBy(g => g.Price).ToList(),
+                "price_desc" => games.OrderByDescending(g => g.Price).ToList(),
+                "date" => games.OrderBy(g => g.ReleaseDate).ToList(),
+                "date_desc" => games.OrderByDescending(g => g.ReleaseDate).ToList(),
+                "category" => games.OrderBy(g => g.Category?.Name).ToList(),
+                "category_desc" => games.OrderByDescending(g => g.Category?.Name).ToList(),
+                _ => games
+            };
+
             return Page();
         }
     }
