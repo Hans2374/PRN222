@@ -15,7 +15,9 @@ namespace GameStore.Data.Models
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Price { get; set; }
 
+        [Required(ErrorMessage = "Release Date is required")]
         [DataType(DataType.Date)]
+        [Display(Name = "Release Date")]
         public DateTime? ReleaseDate { get; set; }
 
         public int? CategoryId { get; set; }

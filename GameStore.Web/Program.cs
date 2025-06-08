@@ -2,8 +2,14 @@ using GameStore.Data.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Set culture to ensure proper decimal handling
+var cultureInfo = new CultureInfo("en-US");
+CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
 // Add DbContext for database access
 builder.Services.AddDbContext<GameStoreDbContext>(options =>
@@ -35,6 +41,15 @@ builder.Services.AddScoped<GameStore.Data.Repositories.ICategoryRepository, Game
 // Add Razor Pages
 builder.Services.AddRazorPages();
 
+// Configure request localization
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    var supportedCultures = new[] { "en-US" };
+    options.SetDefaultCulture(supportedCultures[0])
+        .AddSupportedCultures(supportedCultures)
+        .AddSupportedUICultures(supportedCultures);
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline
@@ -46,6 +61,9 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+// Add localization middleware
+app.UseRequestLocalization();
 
 app.UseRouting();
 
