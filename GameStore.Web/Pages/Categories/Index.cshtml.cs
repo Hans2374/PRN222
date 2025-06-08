@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace GameStore.Web.Pages_Categories
@@ -49,15 +48,8 @@ namespace GameStore.Web.Pages_Categories
             if (CurrentPage < 1) CurrentPage = 1;
             if (CurrentPage > TotalPages && TotalPages > 0) CurrentPage = TotalPages;
 
-            var categories = await _categoryService.GetCategoriesAsync(CurrentPage, PageSize);
-
-            // Apply sorting
-            Category = SortOrder switch
-            {
-                "name" => categories.OrderBy(c => c.Name).ToList(),
-                "name_desc" => categories.OrderByDescending(c => c.Name).ToList(),
-                _ => categories
-            };
+            // Pass the sort order to the service - sorting is now handled at the repository level
+            Category = await _categoryService.GetCategoriesAsync(CurrentPage, PageSize, SortOrder);
 
             return Page();
         }

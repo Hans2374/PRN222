@@ -17,9 +17,19 @@ namespace GameStore.Data.Repositories
             return await _context.Categories.ToListAsync();
         }
 
-        public async Task<List<Category>> GetCategoriesAsync(int pageNumber, int pageSize)
+        public async Task<List<Category>> GetCategoriesAsync(int pageNumber, int pageSize, string? sortOrder = null)
         {
-            return await _context.Categories
+            var query = _context.Categories.AsQueryable();
+
+            // Apply sorting BEFORE pagination
+            query = sortOrder switch
+            {
+                "name" => query.OrderBy(c => c.Name),
+                "name_desc" => query.OrderByDescending(c => c.Name),
+                _ => query.OrderBy(c => c.Id) // Default sorting
+            };
+
+            return await query
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();

@@ -13,9 +13,9 @@ namespace GameStore.Business.Services
             _repository = repository;
         }
 
-        public async Task<List<Game>> GetGamesAsync(int pageNumber, int pageSize)
+        public async Task<List<Game>> GetGamesAsync(int pageNumber, int pageSize, string? sortOrder = null)
         {
-            return await _repository.GetGamesAsync(pageNumber, pageSize);
+            return await _repository.GetGamesAsync(pageNumber, pageSize, sortOrder);
         }
 
         public async Task<Game> GetGameByIdAsync(int id)
@@ -25,11 +25,33 @@ namespace GameStore.Business.Services
 
         public async Task AddGameAsync(Game game)
         {
+            // Add business logic validation if needed
+            if (string.IsNullOrWhiteSpace(game.Title))
+            {
+                throw new ArgumentException("Game title cannot be empty");
+            }
+
+            if (game.Price < 0)
+            {
+                throw new ArgumentException("Game price cannot be negative");
+            }
+
             await _repository.AddGameAsync(game);
         }
 
         public async Task UpdateGameAsync(Game game)
         {
+            // Add business logic validation if needed
+            if (string.IsNullOrWhiteSpace(game.Title))
+            {
+                throw new ArgumentException("Game title cannot be empty");
+            }
+
+            if (game.Price < 0)
+            {
+                throw new ArgumentException("Game price cannot be negative");
+            }
+
             await _repository.UpdateGameAsync(game);
         }
 

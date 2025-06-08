@@ -12,10 +12,25 @@ namespace GameStore.Data.Repositories
             _context = context;
         }
 
-        public async Task<List<Game>> GetGamesAsync(int pageNumber, int pageSize)
+        public async Task<List<Game>> GetGamesAsync(int pageNumber, int pageSize, string? sortOrder = null)
         {
-            return await _context.Games
-                .Include(g => g.Category)
+            var query = _context.Games.Include(g => g.Category).AsQueryable();
+
+            // Apply sorting BEFORE pagination
+            query = sortOrder switch
+            {
+                "title" => query.OrderBy(g => g.Title),
+                "title_desc" => query.OrderByDescending(g => g.Title),
+                "price" => query.OrderBy(g => g.Price),
+                "price_desc" => query.OrderByDescending(g => g.Price),
+                "date" => query.OrderBy(g => g.ReleaseDate),
+                "date_desc" => query.OrderByDescending(g => g.ReleaseDate),
+                "category" => query.OrderBy(g => g.Category != null ? g.Category.Name : ""),
+                "category_desc" => query.OrderByDescending(g => g.Category != null ? g.Category.Name : ""),
+                _ => query.OrderBy(g => g.Id) // Default sorting
+            };
+
+            return await query
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();

@@ -18,9 +18,9 @@ namespace GameStore.Business.Services
             return await _repository.GetCategoriesAsync();
         }
 
-        public async Task<List<Category>> GetCategoriesAsync(int pageNumber, int pageSize)
+        public async Task<List<Category>> GetCategoriesAsync(int pageNumber, int pageSize, string? sortOrder = null)
         {
-            return await _repository.GetCategoriesAsync(pageNumber, pageSize);
+            return await _repository.GetCategoriesAsync(pageNumber, pageSize, sortOrder);
         }
 
         public async Task<int> GetTotalCategoriesCountAsync()

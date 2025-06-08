@@ -3,10 +3,8 @@ using GameStore.Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace GameStore.Web.Pages_Games
@@ -53,21 +51,8 @@ namespace GameStore.Web.Pages_Games
             if (CurrentPage < 1) CurrentPage = 1;
             if (CurrentPage > TotalPages && TotalPages > 0) CurrentPage = TotalPages;
 
-            var games = await _gameService.GetGamesAsync(CurrentPage, PageSize);
-
-            // Apply sorting
-            Game = SortOrder switch
-            {
-                "title" => games.OrderBy(g => g.Title).ToList(),
-                "title_desc" => games.OrderByDescending(g => g.Title).ToList(),
-                "price" => games.OrderBy(g => g.Price).ToList(),
-                "price_desc" => games.OrderByDescending(g => g.Price).ToList(),
-                "date" => games.OrderBy(g => g.ReleaseDate).ToList(),
-                "date_desc" => games.OrderByDescending(g => g.ReleaseDate).ToList(),
-                "category" => games.OrderBy(g => g.Category?.Name).ToList(),
-                "category_desc" => games.OrderByDescending(g => g.Category?.Name).ToList(),
-                _ => games
-            };
+            // Pass the sort order to the service - sorting is now handled at the repository level
+            Game = await _gameService.GetGamesAsync(CurrentPage, PageSize, SortOrder);
 
             return Page();
         }
