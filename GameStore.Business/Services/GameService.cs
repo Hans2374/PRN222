@@ -37,5 +37,10 @@ namespace GameStore.Business.Services
         {
             await _repository.DeleteGameAsync(id);
         }
+
+        public async Task<int> GetTotalGamesCountAsync()
+        {
+            return await _repository.GetTotalGamesCountAsync();
+        }
     }
 }

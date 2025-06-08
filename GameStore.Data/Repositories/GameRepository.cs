@@ -49,5 +49,10 @@ namespace GameStore.Data.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task<int> GetTotalGamesCountAsync()
+        {
+            return await _context.Games.CountAsync();
+        }
     }
 }

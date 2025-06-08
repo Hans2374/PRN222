@@ -14,6 +14,7 @@ namespace GameStore.Web.Pages_Categories
     public class IndexModel : PageModel
     {
         private readonly ICategoryService _categoryService;
+        private const int PageSize = 3;
 
         public IndexModel(ICategoryService categoryService)
         {
@@ -22,9 +23,28 @@ namespace GameStore.Web.Pages_Categories
 
         public IList<Category> Category { get; set; } = default!;
 
-        public async Task OnGetAsync()
+        [BindProperty(SupportsGet = true)]
+        public int CurrentPage { get; set; } = 1;
+
+        public int TotalPages { get; set; }
+        public bool HasPreviousPage => CurrentPage > 1;
+        public bool HasNextPage => CurrentPage < TotalPages;
+
+        public async Task<IActionResult> OnGetAsync()
         {
-            Category = await _categoryService.GetCategoriesAsync();
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToPage("/AccessDenied");
+            }
+
+            var totalItems = await _categoryService.GetTotalCategoriesCountAsync();
+            TotalPages = (int)Math.Ceiling(totalItems / (double)PageSize);
+
+            if (CurrentPage < 1) CurrentPage = 1;
+            if (CurrentPage > TotalPages && TotalPages > 0) CurrentPage = TotalPages;
+
+            Category = await _categoryService.GetCategoriesAsync(CurrentPage, PageSize);
+            return Page();
         }
     }
 }

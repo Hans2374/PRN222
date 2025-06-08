@@ -17,9 +17,17 @@ namespace GameStore.Data.Repositories
             return await _context.Categories.ToListAsync();
         }
 
-        public async Task<Category> GetCategoryByIdAsync(int id)
+        public async Task<List<Category>> GetCategoriesAsync(int pageNumber, int pageSize)
         {
-            return await _context.Categories.FindAsync(id);
+            return await _context.Categories
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
+        public async Task<int> GetTotalCategoriesCountAsync()
+        {
+            return await _context.Categories.CountAsync();
         }
 
         public async Task AddCategoryAsync(Category category)
@@ -42,6 +50,11 @@ namespace GameStore.Data.Repositories
                 _context.Categories.Remove(category);
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public Task<Category> GetCategoryByIdAsync(int id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

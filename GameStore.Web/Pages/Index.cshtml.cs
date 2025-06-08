@@ -12,8 +12,14 @@ public class IndexModel : PageModel
         _logger = logger;
     }
 
-    public void OnGet()
+    public IActionResult OnGet()
     {
+        if (!User.Identity.IsAuthenticated)
+        {
+            return RedirectToPage("/Login");
+        }
 
+        // Redirect authenticated users to Games page
+        return RedirectToPage("/Games/Index");
     }
 }

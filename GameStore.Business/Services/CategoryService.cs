@@ -18,9 +18,14 @@ namespace GameStore.Business.Services
             return await _repository.GetCategoriesAsync();
         }
 
-        public async Task<Category> GetCategoryByIdAsync(int id)
+        public async Task<List<Category>> GetCategoriesAsync(int pageNumber, int pageSize)
         {
-            return await _repository.GetCategoryByIdAsync(id);
+            return await _repository.GetCategoriesAsync(pageNumber, pageSize);
+        }
+
+        public async Task<int> GetTotalCategoriesCountAsync()
+        {
+            return await _repository.GetTotalCategoriesCountAsync();
         }
 
         public async Task AddCategoryAsync(Category category)
@@ -49,6 +54,11 @@ namespace GameStore.Business.Services
         {
             // Could add business logic to check if category has games before deleting
             await _repository.DeleteCategoryAsync(id);
+        }
+
+        public Task<Category> GetCategoryByIdAsync(int id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

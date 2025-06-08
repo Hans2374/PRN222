@@ -22,7 +22,7 @@ namespace GameStore.Web.Pages
         {
             var result = await _signInManager.PasswordSignInAsync(Email, Password, false, false);
             if (result.Succeeded)
-                return RedirectToPage("/Index");
+                return RedirectToPage("/Games/Index");
             ModelState.AddModelError("", "Invalid login attempt.");
             return Page();
         }

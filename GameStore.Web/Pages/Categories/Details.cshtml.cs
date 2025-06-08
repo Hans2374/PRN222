@@ -24,6 +24,11 @@ namespace GameStore.Web.Pages_Categories
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToPage("/AccessDenied");
+            }
+
             if (id == null)
             {
                 return NotFound();

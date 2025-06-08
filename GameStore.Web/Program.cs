@@ -10,12 +10,19 @@ builder.Services.AddDbContext<GameStoreDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add Identity for authentication and authorization
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+{
+    // Configure Identity options if needed
+})
     .AddEntityFrameworkStores<GameStoreDbContext>();
 
-// Configure cookie-based authentication
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options => { options.LoginPath = "/Login"; });
+// Configure cookie-based authentication with Identity
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Login";
+    options.AccessDeniedPath = "/AccessDenied";
+    options.LogoutPath = "/Logout";
+});
 
 // Register Business Layer Services
 builder.Services.AddScoped<GameStore.Business.Interfaces.IGameService, GameStore.Business.Services.GameService>();
