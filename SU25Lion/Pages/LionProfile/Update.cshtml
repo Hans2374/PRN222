@@ -1,0 +1,58 @@
+﻿@page
+@model SU25Lion.Pages.LionProfile.UpdateModel
+@{
+    ViewData["Title"] = "Update Lion Profile";
+}
+
+<h2>Update Lion Profile</h2>
+
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="LionProfile.LionProfileId" />
+
+            <div class="form-group mb-3">
+                <label asp-for="LionProfile.LionName" class="control-label"></label>
+                <input asp-for="LionProfile.LionName" class="form-control" />
+                <span asp-validation-for="LionProfile.LionName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="LionProfile.LionTypeId" class="control-label">Lion Type</label>
+                <select asp-for="LionProfile.LionTypeId" class="form-control" asp-items="Model.LionTypeList">
+                    <option value="">-- Select Lion Type --</option>
+                </select>
+                <span asp-validation-for="LionProfile.LionTypeId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="LionProfile.Weight" class="control-label"></label>
+                <input asp-for="LionProfile.Weight" class="form-control" />
+                <span asp-validation-for="LionProfile.Weight" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="LionProfile.Characteristics" class="control-label"></label>
+                <textarea asp-for="LionProfile.Characteristics" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="LionProfile.Characteristics" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="LionProfile.Warning" class="control-label"></label>
+                <textarea asp-for="LionProfile.Warning" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="LionProfile.Warning" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-page="Index" class="btn btn-secondary">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,62 @@
+﻿@page
+@model SU25Lion.Pages.LionProfile.DetailModel
+@{
+    ViewData["Title"] = "Lion Profile Details";
+}
+
+<h2>Lion Profile Details</h2>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.LionProfile.LionName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.LionProfile.LionName)
+        </dd>
+
+        <dt class="col-sm-2">
+            Lion Type
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.LionProfile.LionType.LionTypeName)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.LionProfile.Weight)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.LionProfile.Weight)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.LionProfile.Characteristics)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.LionProfile.Characteristics)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.LionProfile.Warning)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.LionProfile.Warning)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.LionProfile.ModifiedDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.LionProfile.ModifiedDate)
+        </dd>
+    </dl>
+</div>
+
+<div>
+    @if (Model.CanUpdate)
+    {
+        <a asp-page="./Update" asp-route-id="@Model.LionProfile.LionProfileId" class="btn btn-warning">Edit</a>
+    }
+    <a asp-page="./Index" class="btn btn-secondary">Back to List</a>
+</div>
